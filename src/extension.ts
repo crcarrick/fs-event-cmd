@@ -18,7 +18,7 @@ export class Extension {
 
   constructor(private vscode: VSCodeApi) {
     this.logger = createLogger(
-      this.vscode.window.createOutputChannel('Commands on File', 'log'),
+      this.vscode.window.createOutputChannel('FS Event Commands', 'log'),
     )
   }
 
@@ -48,7 +48,7 @@ export class Extension {
   protected getCommands(): Command[] {
     return (
       this.vscode.workspace
-        .getConfiguration('crcarrick.commandsOnFile')
+        .getConfiguration('crcarrick.fsEventCmd')
         .get('commands') ?? []
     )
   }
@@ -73,6 +73,19 @@ export class Extension {
       }
     }
 
+    if (commands.length !== configCommands.length) {
+      const missingCommands = configCommands.filter(
+        ({ cmd }) => !commands.includes(cmd),
+      )
+
+      this.log(
+        `The following commands are not valid: ${missingCommands
+          .map(({ cmd }) => cmd)
+          .join(', ')}`,
+        'error',
+      )
+    }
+
     return commands
   }
 }
@@ -82,7 +95,7 @@ function noop() {}
 export function activate(context: vscode.ExtensionContext) {
   const extension = new Extension(vscode)
 
-  extension.log('Commands on File activated')
+  extension.log('FS Event Commands activated')
 
   context.subscriptions.push(
     vscode.workspace.onDidCreateFiles((e) =>
