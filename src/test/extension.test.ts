@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 
-import { spy, type SinonSpiedMember } from 'sinon'
+import { spy } from 'sinon'
 import { Uri } from 'vscode'
 
 import {
