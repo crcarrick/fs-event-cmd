@@ -15,7 +15,7 @@ This extension contributes the following settings:
       {
         "cmd": "typescript.restartTsServer",
         "glob": "**/*.ts{,x}",
-        "type": ["create", "rename", "delete"] // or "create" | "rename" | "delete"
+        "type": ["create", "rename", "delete"]
       }
     ]
   }
