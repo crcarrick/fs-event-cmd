@@ -1,0 +1,114 @@
+{
+  "name": "fs-event-cmd",
+  "repository": "https://github.com/crcarrick/fs-event-cmd",
+  "displayName": "FSEventCmd",
+  "publisher": "crcarrick",
+  "description": "Run command palette commands when certain file system events occur (e.g. create, rename, delete)",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "workspaceContains:**/*.*"
+  ],
+  "main": "./out/main.js",
+  "contributes": {
+    "commands": [],
+    "configuration": {
+      "type": "object",
+      "title": "FS Event Commands",
+      "properties": {
+        "crcarrick.fsEventCmd": {
+          "type": "object",
+          "description": "FS Event Commands command configuration",
+          "properties": {
+            "commands": {
+              "type": "array",
+              "description": "Configure commands to run when certain file system events occur (e.g. create, rename, delete) based on file globs",
+              "default": [
+                {
+                  "cmd": "typescript.restartTsServer",
+                  "glob": "**/*.ts{,x}",
+                  "type": [
+                    "create",
+                    "delete",
+                    "rename"
+                  ]
+                }
+              ],
+              "items": {
+                "type": "object",
+                "properties": {
+                  "glob": {
+                    "type": "string",
+                    "description": "Glob to match file paths against",
+                    "default": "**/*.ts{,x}"
+                  },
+                  "type": {
+                    "type": [
+                      "string",
+                      "array"
+                    ],
+                    "description": "Type(s) of file changes to run command on",
+                    "default": "create",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "create",
+                        "rename",
+                        "delete"
+                      ],
+                      "enumDescriptions": [
+                        "Run command when a file is created",
+                        "Run command when a file is renamed",
+                        "Run command when a file is deleted"
+                      ]
+                    }
+                  },
+                  "cmd": {
+                    "type": "string",
+                    "description": "Command to run",
+                    "default": "typescript.restartTsServer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run esbuild:base --minify",
+    "esbuild:dev": "npm run esbuild:base --sourcemap --watch",
+    "esbuild:base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
+    "compile": "tsc -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test",
+    "vsix": "npm install --shamefully-hoist && vsce package"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@types/sinon": "^17.0.3",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "@vscode/test-cli": "^0.0.4",
+    "@vscode/test-electron": "^2.3.8",
+    "@vscode/vsce": "^2.23.0",
+    "esbuild": "^0.19.12",
+    "eslint": "^8.56.0",
+    "sinon": "^17.0.1",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "minimatch": "^9.0.3",
+    "triple-beam": "^1.4.1",
+    "winston": "^3.11.0"
+  }
+}
